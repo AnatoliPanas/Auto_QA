@@ -1,3 +1,7 @@
+# pytest -v test_simple_math.py
+# pytest --markers
+# pytest -vm user_marker
+
 import pytest
 from simple_math import SimpleMath
 

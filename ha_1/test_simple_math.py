@@ -13,7 +13,7 @@ def simplemath():
     (2, 4),
     (0, 0),
     (1, 1),
-    (-2, 4),
+    (-2, 4)
 ])
 def test_square_po_muns(a, exp, simplemath):
     assert simplemath.square(a)  == exp

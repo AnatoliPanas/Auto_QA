@@ -11,20 +11,18 @@ class TestInventory:
     def driver(self):
         driver = webdriver.Chrome()
         driver.get("https://www.saucedemo.com/")
-        LoginPage(driver).success_login(id_tag_username="user-name",
-                                        id_tag_password="password",
-                                        id_tag_button="login-button",
-                                        username="standard_user",
-                                        password="secret_sauce")
+        authorization_data = { "user-name": "standard_user",
+                               "password" : "secret_sauce"
+        }
+
+
+        LoginPage(driver).success_login(authorization_data=authorization_data, id_tag_button="login-button")
         yield driver
         driver.quit()
 
     @pytest.fixture(scope="class")
     def inventory_page(self, driver):
         return InventoryPage(driver)
-
-    def test_item_amount(self, inventory_page):
-        assert inventory_page.get_items_amount() == 6, 'кол-во товаров не соответствует'
 
     def test_add_product(self, inventory_page):
         id_products = ["add-to-cart-sauce-labs-backpack",

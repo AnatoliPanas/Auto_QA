@@ -19,10 +19,9 @@ class LoginPage:
         input_field.clear()
         input_field.send_keys(text)
 
-    def success_login(self, id_tag_username: str, id_tag_password: str, id_tag_button: str, username: str,
-                      password: str, by_name: By = By.ID) -> None:
-        self.enter_field(id_tag_username, username)
-        self.enter_field(id_tag_password, password)
+    def success_login(self, authorization_data: Dict[str, str], id_tag_button: str, by_name: By = By.ID) -> None:
+        for authorization_data_name, authorization_data_val in authorization_data.items():
+            self.enter_field(authorization_data_name, authorization_data_val)
         self.get_tag_by_t(id_tag_button, by_name).click()
 
 
@@ -31,9 +30,6 @@ class InventoryPage(LoginPage):
         super().__init__(driver)
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
-
-    def get_items_amount(self) -> int:
-        return len(self.wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item"))))
 
     def add_product(self, by_name: By, by_par: str) -> bool:
         try:

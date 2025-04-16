@@ -154,3 +154,42 @@ def test_fill_upload(driver):
     alert.accept()
     os.remove(file_path)
     time.sleep(3)
+
+
+def test_qa10(driver):
+    driver.get("https://example.com")
+
+    # Открываем новую вкладку
+    driver.execute_script("window.open('https://google.com', '_blank');")
+
+    time.sleep(2)
+
+    # Выводим список всех вкладок
+    count = driver.window_handles
+
+    assert len(count) == 2, "Ошибка"
+
+from selenium.webdriver.common.action_chains import ActionChains
+
+def test_qa11(driver):
+    driver.get("https://www.iana.org/help/example-domains")
+
+    element_to_hover = driver.find_element(By.LINK_TEXT, 'Domains')
+
+    actions = ActionChains(driver)
+    actions.move_to_element(element_to_hover).perform()
+    time.sleep(3)
+
+def test_qa12(driver):
+    driver.get("https://jqueryui.com/droppable/")
+    driver.switch_to.frame(driver.find_element(By.TAG_NAME, 'iframe'))
+
+    source = driver.find_element(By.ID, 'draggable')
+    target = driver.find_element(By.ID, 'droppable')
+
+    action = ActionChains(driver)
+    action.drag_and_drop(source, target).perform()
+
+    dropped_text = target.text
+    assert dropped_text == 'Dropped!'
+    time.sleep(3)

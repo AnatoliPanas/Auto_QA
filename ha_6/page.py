@@ -6,56 +6,57 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class LoginPage:
-    def __init__(self, driver, ):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
-
-    def get_tag_by_t(self, by_par: str,  by_name: By = By.ID) -> WebElement:
-        return self.wait.until(EC.presence_of_element_located((by_name, by_par)))
-
-    def enter_field(self, id_tag: str, text: str) -> None:
-        input_field = self.get_tag_by_t(id_tag)
-        input_field.clear()
-        input_field.send_keys(text)
-
-    def success_login(self, authorization_data: Dict[str, str], id_tag_button: str, by_name: By = By.ID) -> None:
-        for authorization_data_name, authorization_data_val in authorization_data.items():
-            self.enter_field(authorization_data_name, authorization_data_val)
-        self.get_tag_by_t(id_tag_button, by_name).click()
-
-
-class InventoryPage(LoginPage):
+class BasePage:
     def __init__(self, driver):
-        super().__init__(driver)
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
 
-    def add_product(self, by_name: By, by_par: str) -> bool:
+    def get_element(self, locator_value: str, by: By = By.ID) -> WebElement:
+        return self.wait.until(EC.presence_of_element_located((by, locator_value)))
+
+    def click_element(self, locator_value: str, by: By = By.ID) -> bool:
         try:
-            self.get_tag_by_t(by_par, by_name).click()
+            self.get_element(locator_value, by).click()
             time.sleep(2)
             return True
         except:
             return False
 
-    def click_tag(self, by_name, by_par) -> str | None:
+    def enter_text(self, locator_value: str, text: str, by: By = By.ID) -> None:
+        input_field = self.get_element(locator_value, by)
+        input_field.clear()
+        input_field.send_keys(text)
+
+    def fill_form(self, fields: Dict[str, str], by: By = By.ID) -> None:
+        for locator, value in fields.items():
+            self.enter_text(locator, value, by)
+
+    def click_and_get_url(self, locator_value: str, by: By = By.ID) -> str | None:
         try:
-            self.get_tag_by_t(by_par, by_name).click()
+            self.get_element(locator_value, by).click()
             time.sleep(2)
             return self.driver.current_url
         except:
             return None
 
-    def enter_information(self, id_tags: Dict[str, str], id_button: str, by_name: By = By.ID) -> str | None:
-        for id_tag_name, id_tag_val in id_tags.items():
-            self.enter_field(id_tag_name, id_tag_val)
-        try:
-            self.get_tag_by_t(id_button, by_name).click()
-            return self.driver.current_url
-        except:
-            return None
 
-    def check_total(self, by_name: By, by_par: str):
+class LoginPage(BasePage):
+    def login(self, credentials: Dict[str, str], button_id: str, by: By = By.ID) -> None:
+        self.fill_form(credentials, by)
+        self.click_element(button_id, by)
+
+
+class InventoryPage(BasePage):
+    def add_product(self, locator_value: str, by: By = By.ID) -> bool:
+        return self.click_element(locator_value, by)
+
+    def open_page_via_element(self, locator_value: str, by: By = By.ID) -> str | None:
+        return self.click_and_get_url(locator_value, by)
+
+    def submit_product_form(self, fields: Dict[str, str], button_id: str, by: By = By.ID) -> str | None:
+        self.fill_form(fields, by)
+        return self.click_and_get_url(button_id, by)
+
+    def check_total(self, locator_value: str, by: By = By.ID) -> WebElement:
         time.sleep(2)
-        return self.get_tag_by_t(by_par, by_name)
+        return self.get_element(locator_value, by)

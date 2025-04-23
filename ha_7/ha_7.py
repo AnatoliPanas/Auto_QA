@@ -29,10 +29,9 @@ class TestEmployeeApi:
     def test_user_update(self):
         data_json = {
             "company_id": 1,
-            "email": "net@net.net",
+            "email": "net1@net.net",
             "phone": "+49987654321",
         }
 
-        response = requests.patch(f"{self.base_url}/employee/change/9/?client_token={self.client_token}", json=data_json)
-        print(response.status_code)
-        print(response.text)
+        response = requests.patch(f"{self.base_url}/employee/change/1/?client_token={self.client_token}", json=data_json)
+        assert response.status_code == 200

@@ -1,6 +1,10 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+
+from tests_qa_11.locators.login_locators import LoginLocator
+
 
 class LoginPage:
     def __init__(self, driver):
@@ -11,7 +15,7 @@ class LoginPage:
         self.driver.get("https://www.saucedemo.com/inventory.html")
 
     def get_username_input(self):
-        return self.wait.until(EC.presence_of_element_located((By.ID, "user-name")))
+        return self.wait.until(EC.presence_of_element_located((By.ID, LoginLocator.user_name)))
 
     def get_password_input(self):
         return self.wait.until(EC.presence_of_element_located((By.ID, "password")))
@@ -39,3 +43,10 @@ class LoginPage:
         self.enter_username("standard_user")
         self.enter_password("secret_sauce")
         self.click_on_login_button()
+
+    def alert_clic(self):
+        try:
+            alert = self.driver.switch_to.alert
+            alert.accept()
+        except:
+            pass

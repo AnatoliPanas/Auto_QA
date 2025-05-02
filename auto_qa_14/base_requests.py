@@ -1,3 +1,4 @@
+import allure
 import requests
 
 # base_url = "http://5.101.50.27:8000"
@@ -10,6 +11,7 @@ class CompanyApi:
         self.creds = creds
         self.client_token = self.get_token()
 
+    @allure.step('Получение клиентского   токена')
     def get_token(self):
         url = self.url + '/auth/login'
         resp = requests.post(url, json=self.creds)
@@ -26,6 +28,7 @@ class CompanyApi:
         assert resp.status_code == 201, "Что-то пошло не так!"
         return resp.json()
 
+    @allure.step('Получение компании по ID')
     def get_company(self, company_id):
         url = f"{self.url}/company/{company_id}"
         resp = requests.get(url)
@@ -48,8 +51,16 @@ class CompanyApi:
         assert resp.status_code == 200, "Что-то пошло не так!"
         return resp.json()
 
+
     def get_company_list(self):
         url = f"{self.url}/company/list/"
         resp = requests.get(url)
         assert resp.status_code == 200, "Что-то пошло не так!"
+        return resp.json()
+
+    def set_active_state(self, company_id, is_active):
+        url = f"{self.url}/company/status_update/{company_id}?client_token={self.client_token}"
+        body = {'is_active': is_active}
+        resp = requests.patch(url, json=body)
+        assert resp.status_code == 202, "Что-то пошло не так!"
         return resp.json()

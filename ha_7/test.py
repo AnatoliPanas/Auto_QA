@@ -3,21 +3,21 @@ import requests
 
 class TestEmployeeApi:
     base_url = "http://5.101.50.27:8000"
-    client_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoYXJyeXBvdHRlciIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc0NTQxNDc5NH0.K3IqEndJDS_9E4qqahsrXMdqOcFGBVZ05PVgUw7jdUU"
+    client_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoYXJyeXBvdHRlciIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc0NjQ1ODkxM30.Elw9ExSKMizCP4TJM-DWqzJeSQ7jymkBZuhG_DI7OQs"
 
     def test_user_create(self):
         data_json = {
             "first_name": "Анатолий",
             "last_name": "Панас",
             "middle_name": "Александрович",
-            "company_id": 1,
+            "company_id": 615,
             "email": "net@net.net",
             "phone": "+49123456789",
             "birthdate": "1986-01-25",
             "is_active": True
         }
 
-        response = requests.post(f"{self.base_url}/employee/create", json=data_json)
+        response = requests.post(f"{self.base_url}/employee/create/", json=data_json)
         assert response.status_code == 200
 
     def test_user_info(self):

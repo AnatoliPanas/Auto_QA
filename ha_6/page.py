@@ -1,5 +1,7 @@
 import time
 from typing import List, Dict
+
+from selenium.common import NoAlertPresentException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
@@ -39,12 +41,18 @@ class BasePage:
         except:
             return None
 
+    def alert_accept(self):
+        try:
+            alert = self.driver.switch_to.alert
+            alert.accept()
+        except NoAlertPresentException:
+            print("No alert present to accept.")
+
 
 class LoginPage(BasePage):
     def login(self, credentials: Dict[str, str], button_id: str, by: By = By.ID) -> None:
         self.fill_form(credentials, by)
         self.click_element(button_id, by)
-
 
 class InventoryPage(BasePage):
     def add_product(self, locator_value: str, by: By = By.ID) -> bool:

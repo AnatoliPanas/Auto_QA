@@ -2,19 +2,24 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from ha_6.page import LoginPage, InventoryPage
+from selenium.webdriver.chrome.options import Options
 
 
 class TestInventory:
 
     @pytest.fixture(scope="class")
     def driver(self):
-        driver = webdriver.Chrome()
+        options = Options()
+        options.add_argument("--disable-features=PasswordCheck")
+        options.add_argument("--disable-notifications")
+        options.add_argument("--disable-popup-blocking")
+        driver = webdriver.Chrome(options=options)
+
         driver.get("https://www.saucedemo.com/")
         authorization_data = {
             "user-name": "standard_user",
             "password": "secret_sauce"
         }
-
         LoginPage(driver).login(credentials=authorization_data, button_id="login-button")
         yield driver
         driver.quit()
